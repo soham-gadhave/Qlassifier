@@ -128,3 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# ML Pickle Models and large CSV files
+Machine_Learning/Dataset/*.csv
+Machine_Learning/Models/
