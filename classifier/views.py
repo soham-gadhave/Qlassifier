@@ -88,8 +88,8 @@ def index(request):
 
 		try:
 			data = json.loads(request.body.decode("utf-8"))
-		except TypeError as ve:
-			JsonResponse({"message" : "Empty data. Try again", "error": ve}, status=204)
+		except Exception as ve:
+			return JsonResponse({"message" : "Empty data. Try again", "error": ve}, status=204)
 		
 		print(data)
 		
