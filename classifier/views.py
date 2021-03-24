@@ -82,24 +82,26 @@ def index(request):
 			
 			return response
 		except Exception as exception:
-			return JsonResponse({"message" : "Sorry something went wrong, counld not process your request. Try again", "error": exception}, status=500)
+			return JsonResponse({"message" : "Sorry something went wrong, counld not process your request. Try again", "error": str(exception)}, status=500)
 
 	if request.method == "POST":
 
 		try:
 			data = json.loads(request.body.decode("utf-8"))
-		except Exception as ve:
-			return JsonResponse({"message" : "Empty data. Try again", "error": ve}, status=204)
-		
-		print(data)
-		
+		except Exception as e:
+			return JsonResponse({"message" : "Bad Data", "error": str(e)}, status=400)
+		if data == []:
+			return JsonResponse({"message" : "Empty data", "error": "No Data sent for processing"}, status=204)
+		if type(data) != type([]): 
+			return JsonResponse({"message" : "Bad Data", "error": "Data is not in JSON array/list format"}, status=400)
+				
 		try:
 			questions = []
 			try:
 				for ele in data:
 					questions.append(str(ele["question_text"]))
 			except KeyError as ke:
-				return JsonResponse({"message" : """question_text" attribute not found. Try again""", "error": ke}, status=300)
+				return JsonResponse({"message" : """"question_text" attribute not found. Try again""", "error": str(ke)}, status=300)
 
 			x = clean_and_extract(questions)
 			x_te = x[0]
@@ -157,4 +159,4 @@ def index(request):
 
 			return response
 		except Exception as exception:
-			return JsonResponse({"message" : "Sorry something went wrong, counld not process your request. Try again", "error": exception}, status=500)
+			return JsonResponse({"message" : "Sorry something went wrong, counld not process your request. Try again", "error": str(exception)}, status=500)
