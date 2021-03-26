@@ -45,9 +45,10 @@ def index(request):
 
 			Type = []
 			probabilities = [prob_LR_tfidf, prob_LR_count, prob_SVC_tfidf, prob_SVC_count, prob_NB_count]
+			threshold = [0.18, 0.17, 0.4, 0.4, 0.12]
 			
-			for prob in probabilities:
-				if prob >= 0.5:
+			for i in range(len(probabilities)):
+				if probabilities[i] >= threshold[i]:
 					Type.append("Insincere")
 				else:
 					Type.append("Sincere")
@@ -59,7 +60,7 @@ def index(request):
 						"type": Type[0],
 						"probability": probabilities[0] 
 					},
-					"LF_COUNT": {
+					"LR_COUNT": {
 						"type": Type[1],
 						"probability": probabilities[1] 
 					},
@@ -108,19 +109,24 @@ def index(request):
 			x_te1 = x[1]
 			x_c = x[2]
 
+			print(x_te)
+
 			prob_LR_tfidf = LR_tfidf.predict_proba(x_te)[:,1]
 			prob_SVC_tfidf = SVC_tfidf._predict_proba_lr(x_te)[:,1]
 			prob_NB_count = NB_count.predict_proba(x_c)[:,1]
 			prob_LR_count = LR_count.predict_proba(x_te1)[:,1]
 			prob_SVC_count = SVC_count._predict_proba_lr(x_te1)[:,1]
 
-			probabilities = [prob_LR_tfidf, prob_SVC_tfidf, prob_NB_count, prob_LR_count, prob_SVC_count]
+			probabilities = [prob_LR_tfidf, prob_LR_count, prob_SVC_tfidf, prob_SVC_count, prob_NB_count]
 			Type = [[], [], [], [], []]
 			response = []
+			threshold = [0.18, 0.17, 0.4, 0.4, 0.12]
+
+			print(probabilities)
 
 			for i in range(len(probabilities)):
 				for j in range(len(probabilities[i])):
-					if probabilities[i][j] >= 0.5:
+					if probabilities[i][j] >= threshold[i]:
 						Type[i].append("Insincere")
 					else:
 						Type[i].append("Sincere")
@@ -134,7 +140,7 @@ def index(request):
 							"type": Type[0][i],
 							"probability": probabilities[0][i] 
 						},
-						"LF_COUNT": {
+						"LR_COUNT": {
 							"type": Type[1][i],
 							"probability": probabilities[1][i] 
 						},

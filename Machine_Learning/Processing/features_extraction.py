@@ -34,7 +34,7 @@ def clean_and_extract(data):
     # Number of stopwords
     df_test['num_stopwords'] = df_test['question_text'].apply(lambda x: len([c for c in str(x).lower().split() if c in STOPWORDS]))
 
-    df_test['preprocessed_question_text'] = data_cleaning(df_test['question_text'])
+    df_test['preprocessed_question_text'] = df_test['question_text'].apply(lambda x : data_cleaning(x))
 
     tfidf = pickle.load(open(settings.BASE_DIR / "Machine_Learning/Models/tfidf.sav", "rb"))
     X_test_ques = tfidf.transform(df_test['preprocessed_question_text'].values)
@@ -47,10 +47,10 @@ def clean_and_extract(data):
     num_char = pickle.load(open(settings.BASE_DIR / "Machine_Learning/Models/num_char.sav", "rb"))
     num_stopwords = pickle.load(open(settings.BASE_DIR / "Machine_Learning/Models/num_stopwords.sav", "rb"))
 
-    X_test_num_words = num_words.transform(df_test['num_words'].values.reshape(-1, 1))
-    X_test_num_unique_words = num_unique_words.transform(df_test['num_unique_words'].values.reshape(-1, 1))
-    X_test_num_char = num_char.transform(df_test['num_char'].values.reshape(-1, 1))
-    X_test_num_stopwords = num_stopwords.transform(df_test['num_stopwords'].values.reshape(-1, 1))
+    X_test_num_words = num_words.fit_transform(df_test['num_words'].values.reshape(-1, 1))
+    X_test_num_unique_words = num_unique_words.fit_transform(df_test['num_unique_words'].values.reshape(-1, 1))
+    X_test_num_char = num_char.fit_transform(df_test['num_char'].values.reshape(-1, 1))
+    X_test_num_stopwords = num_stopwords.fit_transform(df_test['num_stopwords'].values.reshape(-1, 1))
 
     X_te = hstack((
         X_test_ques,
