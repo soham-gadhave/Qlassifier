@@ -11,36 +11,36 @@ STOPWORDS = set(stopwords.words('english'))
 
 def clean_and_extract(data):
 
-    df_test = pd.DataFrame(data = data, columns = ["question_text"])
+    df_test = pd.DataFrame(data = data, columns = ["text"])
 
     # Number of words
-    df_test['num_words'] = df_test['question_text'].apply(lambda x: len(str(x).split()))
+    df_test['num_words'] = df_test['text'].apply(lambda x: len(str(x).split()))
 
     # Number of capital_letters
-    df_test['num_capital_let'] = df_test['question_text'].apply(lambda x: len([c for c in str(x) if c.isupper()]))
+    df_test['num_capital_let'] = df_test['text'].apply(lambda x: len([c for c in str(x) if c.isupper()]))
 
     # Number of special characters
-    df_test['num_special_char'] = df_test['question_text'].str.findall(r'[^a-zA-Z0-9 ]').str.len()
+    df_test['num_special_char'] = df_test['text'].str.findall(r'[^a-zA-Z0-9 ]').str.len()
 
     # Number of unique words
-    df_test['num_unique_words'] = df_test['question_text'].apply(lambda x: len(set(str(x).split())))
+    df_test['num_unique_words'] = df_test['text'].apply(lambda x: len(set(str(x).split())))
 
     # Number of numerics
-    df_test['num_numerics'] = df_test['question_text'].apply(lambda x: sum(c.isdigit() for c in x))
+    df_test['num_numerics'] = df_test['text'].apply(lambda x: sum(c.isdigit() for c in x))
 
     # Number of characters
-    df_test['num_char'] = df_test['question_text'].apply(lambda x: len(str(x)))
+    df_test['num_char'] = df_test['text'].apply(lambda x: len(str(x)))
 
     # Number of stopwords
-    df_test['num_stopwords'] = df_test['question_text'].apply(lambda x: len([c for c in str(x).lower().split() if c in STOPWORDS]))
+    df_test['num_stopwords'] = df_test['text'].apply(lambda x: len([c for c in str(x).lower().split() if c in STOPWORDS]))
 
-    df_test['preprocessed_question_text'] = data_cleaning(df_test['question_text'])
+    df_test['preprocessed_text'] = data_cleaning(df_test['text'])
 
     tfidf = pickle.load(open(settings.BASE_DIR / "Machine_Learning/Models/tfidf.sav", "rb"))
-    X_test_ques = tfidf.transform(df_test['preprocessed_question_text'].values)
+    X_test_ques = tfidf.transform(df_test['preprocessed_text'].values)
 
     count_vectorizer = pickle.load(open(settings.BASE_DIR / "Machine_Learning/Models/count_vectorizer.sav", "rb"))
-    X_test_ques_countV = count_vectorizer.transform(df_test['preprocessed_question_text'].values)
+    X_test_ques_countV = count_vectorizer.transform(df_test['preprocessed_text'].values)
     
     num_words = pickle.load(open(settings.BASE_DIR / "Machine_Learning/Models/num_words.sav", "rb"))
     num_unique_words = pickle.load(open(settings.BASE_DIR / "Machine_Learning/Models/num_unique_words.sav", "rb"))

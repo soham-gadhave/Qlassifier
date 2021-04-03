@@ -21,17 +21,17 @@ def index(request):
 
 	if request.method == 'GET':
 		
-		# print(request.GET.get("question_text"))
+		# print(request.GET.get("text"))
 		try:
-			if request.GET.get("question_text"):
-				data = {'question_text': request.GET.get("question_text")}
+			if request.GET.get("text"):
+				data = {'text': request.GET.get("text")}
 			else:
 				data = json.loads(request.body.decode("utf-8"))
 		except (TypeError, json.JSONDecodeError):
 			return JsonResponse({"message": "Bad Request, check if you are not sending Empty or invalid Data"}, status=400)
 
 		try:
-			x = clean_and_extract([str(data['question_text'])])
+			x = clean_and_extract([str(data['text'])])
 			x_te = x[0]
 			x_te1 = x[1]
 			x_c = x[2]
@@ -53,7 +53,7 @@ def index(request):
 					Type.append("Sincere")
 
 			response_body = {
-				"question_text" : str(data['question_text']),
+				"text" : str(data['text']),
 				"models": {
 					"LR_TFIDF": {
 						"type": Type[0],
@@ -89,19 +89,19 @@ def index(request):
 		try:
 			data = json.loads(request.body.decode("utf-8"))
 		except Exception as e:
-			return JsonResponse({"message" : "Bad Data", "error": str(e)}, status=400)
+			return JsonResponse({"message" : "Bad Data", "error": str(e)}, status=422)
 		if data == []:
-			return JsonResponse({"message" : "Empty data", "error": "No Data sent for processing"}, status=204)
+			return JsonResponse({"message" : "Empty data", "error": "No Data sent for processing"}, status=400)
 		if type(data) != type([]): 
-			return JsonResponse({"message" : "Bad Data", "error": "Data is not in JSON array/list format"}, status=400)
+			return JsonResponse({"message" : "Bad Data", "error": "Data is not in JSON array/list format"}, status=422)
 				
 		try:
 			questions = []
 			try:
 				for ele in data:
-					questions.append(str(ele["question_text"]))
+					questions.append(str(ele["text"]))
 			except KeyError as ke:
-				return JsonResponse({"message" : """"question_text" attribute not found. Try again""", "error": str(ke)}, status=300)
+				return JsonResponse({"message" : """"text" attribute not found. Try again""", "error": str(ke)}, status=422)
 
 			x = clean_and_extract(questions)
 			x_te = x[0]
@@ -128,7 +128,7 @@ def index(request):
 			for i in range(len(questions)):			
 				
 				response_body = {
-					"question_text" : questions[i],
+					"text" : questions[i],
 					"models": {
 						"LR_TFIDF": {
 							"type": Type[0][i],
