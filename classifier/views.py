@@ -109,8 +109,6 @@ def index(request):
 			x_te1 = x[1]
 			x_c = x[2]
 
-			print(x_te)
-
 			prob_LR_tfidf = LR_tfidf.predict_proba(x_te)[:,1]
 			prob_SVC_tfidf = SVC_tfidf._predict_proba_lr(x_te)[:,1]
 			prob_NB_count = NB_count.predict_proba(x_c)[:,1]

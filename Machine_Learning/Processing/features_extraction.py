@@ -34,7 +34,7 @@ def clean_and_extract(data):
     # Number of stopwords
     df_test['num_stopwords'] = df_test['text'].apply(lambda x: len([c for c in str(x).lower().split() if c in STOPWORDS]))
 
-    df_test['preprocessed_question_text'] = df_test['text'].apply(lambda x : data_cleaning(x))
+    df_test['preprocessed_text'] = df_test['text'].apply(lambda x : data_cleaning(x))
 
     tfidf = pickle.load(open(settings.BASE_DIR / "Machine_Learning/Models/tfidf.sav", "rb"))
     X_test_ques = tfidf.transform(df_test['preprocessed_text'].values)
